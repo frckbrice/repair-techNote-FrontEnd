@@ -99,6 +99,10 @@ thead {
   text-decoration: underline;
 }
 
+.table {
+  height: 70vh;
+}
+
 .table--users,
 .table--notes {
   font-size: 1rem;
@@ -123,6 +127,12 @@ thead {
   color: brown;
 }
 
+.dash-header__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem ;
+}
 
 
 

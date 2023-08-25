@@ -9,7 +9,8 @@ export default function UserList() {
     isSuccess,
     isError,
     error,
-  } = useGetUsersQuery(null, { // this helps to have up-to-dated data everytime we are on the page.
+  } = useGetUsersQuery('usersList', {
+     // this helps to have up-to-dated data everytime we are on the page.
     pollingInterval: 60000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
@@ -38,15 +39,15 @@ export default function UserList() {
       <table className="table table--users">
         <thead className="table__thead">
           <tr>
-            <th scope="col" className="tale__th user__username">
+            <th scope="col" className="table__th user__username">
               {" "}
               Username
             </th>
-            <th scope="col" className="tale__th user__role">
+            <th scope="col" className="table__th user__role">
               {" "}
               Roles
             </th>
-            <th scope="col" className="tale__th user__ediit">
+            <th scope="col" className="table__th user__ediit">
               {" "}
               Edit
             </th>

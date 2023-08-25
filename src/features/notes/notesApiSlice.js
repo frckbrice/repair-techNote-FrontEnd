@@ -17,7 +17,6 @@ export const notesApiSlice = apiSlice.injectEndpoints({
       },
       // keepUnusedData: 5, //in seconde
       transformResponse: (responseData) => {
-        console.log(responseData);
         const loadedNotes = responseData.map((note) => {
           note.id = note._id;
           return note;
@@ -25,7 +24,7 @@ export const notesApiSlice = apiSlice.injectEndpoints({
         return notesAdapter.setAll(initialState, loadedNotes);
       },
       providesTags: (result, error, arg) => {
-        if (error) throw new Error(error);
+        // if (error)  throw new Error(error);
         if (result?.ids) {
           return [
             {
@@ -89,7 +88,7 @@ const selectNotesData = createSelector(
 export const {
   selectAll: selectAllnotes,
   selectById: selectNoteById,
-  selectIds: selectNotesIds,
+  selectIds: selectNoteIds,
   // Pass in a selector that returns slice of state
 } = notesAdapter.getSelectors(
   (state) => selectNotesData(state) ?? initialState

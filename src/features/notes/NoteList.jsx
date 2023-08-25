@@ -1,5 +1,9 @@
 import Note from "./Note";
 import { useGetNotesQuery } from "./notesApiSlice";
+// import useTitle from "../../hooks/useTitle";
+import PulseLoader from "react-spinners/PulseLoader";
+import { useSelector } from "react-redux/es/hooks/useSelector";
+import { selectAllUsers } from "../users/usersApiSlice";
 
 const NoteList = () => {
   const {
@@ -8,7 +12,7 @@ const NoteList = () => {
     isSuccess,
     isError,
     error,
-  } = useGetNotesQuery(undefined, {
+  } = useGetNotesQuery('notesList', {
     // this helps to have up-to-dated data everytime we are on the page.
     pollingInterval: 15000, // more than  one persone can work on those data that's why we put the update time to 15s
     refetchOnFocus: true,
@@ -17,12 +21,16 @@ const NoteList = () => {
 
   let content;
 
-  if (isLoading) content = <p>Loading...</p>;
+  if(!notes?.ids?.length) {
+    content = <p className="errmsg">Unauthorized{error?.data?.message}</p>;
+}
+  if (isLoading) content = <PulseLoader color={"#FFF"} />;
 
   if (isError) {
     content = (
-      <p className={isError ? "Error fetching data from api" : "offscreen"}>
+      <p className="errmsg">
         {error?.data?.message}
+       
       </p>
     );
   }
@@ -41,7 +49,7 @@ const NoteList = () => {
           <tr>
             <th scope="col" className="table__th note__title">
               {" "}
-              title
+              Title
             </th>
             <th scope="col" className="table__th note__created">
               {" "}
@@ -54,7 +62,7 @@ const NoteList = () => {
 
             <th scope="col" className="table__th note__status">
               {" "}
-              status
+              Status
             </th>
             <th scope="col" className="table__th note__username">
               {" "}

@@ -17,6 +17,7 @@ import NewUserForm from "./features/users/NewUserForm";
 import EditNote from "./features/notes/EditNote";
 import NewNote from "./features/notes/NewNote";
 import Prefetch from "./features/auth/Prefetch";
+import PersistLogin from "./features/auth/PersistLogin";
 
 const routes = createBrowserRouter([
   {
@@ -37,49 +38,53 @@ const routes = createBrowserRouter([
             path: "/login",
             element: <Login />,
           },
-
-          {
-            element: <Prefetch />,
+          { // this help us to remain loggin even if token expires and then require the refresh token
+            element: <PersistLogin />,
             children: [
-              {
-                path: "/dash",
-                element: <DashLayout />,
+              {// prefetch just fetch data in advance
+                element: <Prefetch />,
                 children: [
                   {
-                    index: true,
-                    element: <Welcome />,
-                  },
-                  {
-                    path: "users",
+                    path: "/dash",
+                    element: <DashLayout />,
                     children: [
                       {
                         index: true,
-                        element: <UserList />,
+                        element: <Welcome />,
                       },
                       {
-                        path: ":id",
-                        element: <EditUser />,
+                        path: "users",
+                        children: [
+                          {
+                            index: true,
+                            element: <UserList />,
+                          },
+                          {
+                            path: ":id",
+                            element: <EditUser />,
+                          },
+                          {
+                            path: "new",
+                            element: <NewUserForm />,
+                          },
+                        ],
                       },
                       {
-                        path: "new",
-                        element: <NewUserForm />,
-                      },
-                    ],
-                  },
-                  {
-                    path: "notes",
-                    children: [
-                      {
-                        index: true,
-                        element: <NoteList />,
-                      },
-                      {
-                        path: ":id",
-                        element: <EditNote />,
-                      },
-                      {
-                        path: "new",
-                        element: <NewNote />,
+                        path: "notes",
+                        children: [
+                          {
+                            index: true,
+                            element: <NoteList />,
+                          },
+                          {
+                            path: ":id",
+                            element: <EditNote />,
+                          },
+                          {
+                            path: "new",
+                            element: <NewNote />,
+                          },
+                        ],
                       },
                     ],
                   },

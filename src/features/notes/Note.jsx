@@ -34,12 +34,12 @@ function Note({ noteId }) {
 
         <td className="table__cell note__status">
           {note.completed ? (
-            <span className="note__status--completed">Compled</span>
+            <span className="note__status--completed">Completed</span>
           ) : (
             <span className="note__status--open">Open</span>
           )}
         </td>
-        <td className="table__cell note__username">{note.user.username}</td>
+        <td className="table__cell note__username">{note.username}</td>
         <td className="table__cell">
           <button className="icon-button table__button" onClick={handleEdit}>
             <FontAwesomeIcon icon={faPenToSquare} />

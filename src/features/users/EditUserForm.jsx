@@ -55,9 +55,9 @@ export const EditUserForm = ({ user }) => {
     setRoles(values);
   };
 
-  const onActiveChange = (e) => setActive((prev) => !prev);
+  const onActiveChange = () => setActive((prev) => !prev);
 
-  const onSaveUserClicked = async (e) => {
+  const onSaveUserClicked = async () => {
     if (password) {
       await updateUser({ id: user.id, username, password, roles, active });
     } else {
@@ -65,7 +65,7 @@ export const EditUserForm = ({ user }) => {
     }
   };
 
-  const onDeleteUserClicked = async (e) => {
+  const onDeleteUserClicked = async () => {
     await deleteUser({ id: user.id });
   };
 
@@ -149,7 +149,7 @@ export const EditUserForm = ({ user }) => {
           className={`form__input ${validPwdClass}`}
           value={password}
           onChange={onPasswordChange}
-        />
+        /> 
         <br />
         <label
           htmlFor="user-active"
@@ -161,7 +161,7 @@ export const EditUserForm = ({ user }) => {
           type="checkbox"
           name="user-active"
           id="user-active"
-          className={`form__checkbox`}
+          className="form__checkbox"
           checked={active}
           onChange={onActiveChange}
         />{" "}
@@ -190,6 +190,24 @@ export const EditUserForm = ({ user }) => {
 
 EditUserForm.prototype = {
   // id: PropTypes.string,
+};
+EditUserForm.PropTypes = {
+  errContent: PropTypes.bool,
+  canSave: PropTypes.bool,
+  options: PropTypes.array,
+  status: PropTypes.bool,
+  updateUser: PropTypes.func,
+  deleteUser: PropTypes.func,
+  navigate: PropTypes.func,
+  isSuccess: PropTypes.bool,
+  isError: PropTypes.bool,
+  isDelError: PropTypes.bool,
+  isDelSuccess: PropTypes.bool,
+  error: PropTypes.string,
+  role: PropTypes.array,
+  password: PropTypes.string,
+  username: PropTypes.string,
+  active: PropTypes.bool,
 };
 
 // export default EditUserForm;
