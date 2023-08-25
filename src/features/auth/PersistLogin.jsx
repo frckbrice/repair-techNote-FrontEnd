@@ -4,6 +4,9 @@ import { useRefreshMutation } from "./authApiSlice";
 import usePersist from "../../hooks/usePersist";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { selectCurrentToken } from "./authSlice";
+import PulseLoader from "react-spinners/PulseLoader";
+
+//*this component help us to remain logged in, even if we refresh the application.
 
 const PersistLogin = () => {
   const [persist] = usePersist();
@@ -48,14 +51,16 @@ const PersistLogin = () => {
   } else if (isLoading) {
     // persist: yes, token: no
     console.log("loading");
-    content = <p>Loading...</p>;
+    content = <PulseLoader color="#fff"/>;
   } else if (isError) {
     // persist: yes, token: no
     console.log("error");
     content = (
-      <p className="errmsg">
-        {error.data?.message}
-        <Link to={"/login"}>Please login again</Link>
+      <p className="errmsg ">
+        {`${error?.data?.message} - `}
+        <Link to={"/login"} className=" persistloginmsg">
+          Please login again
+        </Link>
       </p>
     );
   } else if (isSuccess && trueSuccess) {
@@ -74,4 +79,4 @@ const PersistLogin = () => {
 
 export default PersistLogin;
 
-//this component help us to reman logged in, even if we refresh the application.
+

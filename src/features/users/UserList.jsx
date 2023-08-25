@@ -1,6 +1,6 @@
-
 import { useGetUsersQuery } from "./usersApiSlice";
 import User from "./User";
+import PulseLoader from "react-spinners/PulseLoader";
 
 export default function UserList() {
   const {
@@ -9,8 +9,8 @@ export default function UserList() {
     isSuccess,
     isError,
     error,
-  } = useGetUsersQuery('usersList', {
-     // this helps to have up-to-dated data everytime we are on the page.
+  } = useGetUsersQuery("usersList", {
+    // this helps to have up-to-dated data everytime we are on the page.
     pollingInterval: 60000,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
@@ -18,7 +18,7 @@ export default function UserList() {
 
   let content;
 
-  if (isLoading) content = <p>Loading...</p>;
+  if (isLoading) content = <PulseLoader color="#fff"/>;
 
   if (isError) {
     content = (
@@ -30,10 +30,9 @@ export default function UserList() {
 
   if (isSuccess) {
     const { ids } = users;
-// console.log(ids);
-    const tableContent = ids?.length
-      ? ids.map((userId) => <User key={userId} userId={userId} />)
-      : null;
+    // console.log(ids);
+    const tableContent =
+      ids?.length && ids.map((userId) => <User key={userId} userId={userId} />);
 
     content = (
       <table className="table table--users">

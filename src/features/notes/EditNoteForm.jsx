@@ -4,12 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
+import useAuth from "../../hooks/useAuth";
+import { memo } from "react";
 
 //* challenge
 
+//eslint-disable-next-line
 const EditNoteForm = ({ note, users }) => {
   const [updateNote, { isLoading, isSuccess, isError, error }] =
     useUpdateNoteMutation();
+
+  const { isManager, isAdmin } = useAuth();
 
   const [
     deleteNote,
@@ -23,15 +28,32 @@ const EditNoteForm = ({ note, users }) => {
   const [text, setText] = useState(note.text);
   const [completed, setCompleted] = useState(note.completed);
 
-  useEffect(() => {  
+  useEffect(() => {
     if (isSuccess || isDelSuccess) {
       setUser("");
       setText("");
       setTitle("");
-      setCompleted(false)
+      setCompleted(false);
       navigate("/dash/notes");
     }
   }, [isSuccess, isDelSuccess, navigate]);
+
+  const createdAt = new Date(note.createdAt).toLocaleString("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  });
+  const updatedAt = new Date(note.updatedAt).toLocaleString("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  });
 
   const onUserChange = (e) => setUser(e.target.value);
   const onTitleChange = (e) => setTitle(e.target.value);
@@ -47,8 +69,7 @@ const EditNoteForm = ({ note, users }) => {
     await deleteNote({ id: note.id });
   };
 
-  const canSave =
-    [{ id: note.id }, user, title, text].every(Boolean) && !isLoading;
+  const canSave = [user, title, text].every(Boolean) && !isLoading;
 
   const optionUsers = users.map((user) => {
     return (
@@ -61,6 +82,20 @@ const EditNoteForm = ({ note, users }) => {
   const errClass = isError || isDelError ? "errmsg" : "offscreen";
 
   const errContent = (error?.data?.message || delerror?.data.message) ?? "";
+
+  let deleteButton;
+  if (isAdmin || isManager) {
+    deleteButton = (
+      <button
+        className="icon-button"
+        title="Delete"
+        onClick={onDeleteNoteClicked}
+      >
+        <FontAwesomeIcon icon={faTrashCan} />
+      </button>
+    );
+  }
+
   const content = (
     <>
       <p className={errClass}>{errContent}</p>
@@ -76,18 +111,13 @@ const EditNoteForm = ({ note, users }) => {
             >
               <FontAwesomeIcon icon={faSave} />
             </button>
-            <button
-              className="icon-button"
-              title="Delete"
-              onClick={onDeleteNoteClicked}
-            >
-              <FontAwesomeIcon icon={faTrashCan} />
-            </button>
+            {deleteButton}
           </div>
         </div>
         <label htmlFor="username" className="form__label">
-          User:
-        </label><br />
+          ASSIGN TO:
+        </label>
+        <br />
         <select
           name="user"
           id="user"
@@ -95,7 +125,7 @@ const EditNoteForm = ({ note, users }) => {
           value={user}
           onChange={onUserChange}
         >
-          <option value=""></option>
+          <option value="">Select a user</option>
           {optionUsers}
         </select>
         <br />
@@ -125,22 +155,37 @@ const EditNoteForm = ({ note, users }) => {
           onChange={onTextChange}
         />
         <br />
-        <label
-          htmlFor="user-active"
-          className="form__label form__checkbox-container"
-        >
-          Completed:
-          <input
-            type="checkbox"
-            name="completed"
-            id="user-active"
-            className={`form__checkbox`}
-            checked={completed}
-            onChange={onCompletedChange}
-            value="Complete"
-          />{" "}
-        </label>
-        <br />
+        <div className="div-divider">
+          <div>
+            <label
+              htmlFor="user-active"
+              className="form__label form__checkbox-container"
+            >
+              Completed:
+              <input
+                type="checkbox"
+                name="completed"
+                id="user-active"
+                className={`form__checkbox`}
+                checked={completed}
+                onChange={onCompletedChange}
+                value="Complete"
+              />{" "}
+            </label>
+          </div>
+          <div>
+            <p className="form__created">
+              Created:
+              <br />
+              {createdAt}
+            </p>
+            <p className="form__updated">
+              Updated:
+              <br />
+              {updatedAt}
+            </p>
+          </div>
+        </div>
       </form>
     </>
   );
@@ -163,6 +208,8 @@ EditNoteForm.propTypes = {
   error: PropTypes.string,
   title: PropTypes.string,
   text: PropTypes.string,
+  createdAt: PropTypes.string,
+  updatedAt: PropTypes.string,
 };
-
-export default EditNoteForm;
+//eslint-disable-next-line 
+export default memo(EditNoteForm);

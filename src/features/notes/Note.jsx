@@ -1,13 +1,21 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
-import { useSelector } from "react-redux/es/hooks/useSelector";
-import { selectNoteById } from "./notesApiSlice";
+// import { useSelector } from "react-redux/es/hooks/useSelector";
+// import { selectNoteById } from "./notesApiSlice";
+import { useGetNotesQuery } from "./notesApiSlice";
 
-
+//eslint-disable-next-line
 function Note({ noteId }) {
-  const note = useSelector((state) => selectNoteById(state, noteId));
+
+  // const note = useSelector((state) => selectNoteById(state, noteId));
+  const {note} = useGetNotesQuery('notesList', {
+    selectFromResult: ({data}) => ({
+      note: data?.entities[noteId]
+    })
+  });
 
   const navigate = useNavigate();
 
@@ -49,5 +57,5 @@ function Note({ noteId }) {
     );
   } else return null;
 }
-
-export default Note;
+//eslint-disable-next-line
+export default React.memo(Note);

@@ -2,8 +2,7 @@ import Note from "./Note";
 import { useGetNotesQuery } from "./notesApiSlice";
 // import useTitle from "../../hooks/useTitle";
 import PulseLoader from "react-spinners/PulseLoader";
-import { useSelector } from "react-redux/es/hooks/useSelector";
-import { selectAllUsers } from "../users/usersApiSlice";
+import useAuth from "../../hooks/useAuth";
 
 const NoteList = () => {
   const {
@@ -12,36 +11,43 @@ const NoteList = () => {
     isSuccess,
     isError,
     error,
-  } = useGetNotesQuery('notesList', {
+  } = useGetNotesQuery("notesList", {
     // this helps to have up-to-dated data everytime we are on the page.
     pollingInterval: 15000, // more than  one persone can work on those data that's why we put the update time to 15s
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
   });
 
+  const { username, isAdmin, isManager } = useAuth();
+
   let content;
 
-  if(!notes?.ids?.length) {
+  if (!notes?.ids?.length) {
     content = <p className="errmsg">Unauthorized{error?.data?.message}</p>;
-}
-  if (isLoading) content = <PulseLoader color={"#FFF"} />;
+  }
+  if (isLoading && !notes?.ids?.length)
+    content = <PulseLoader color={"#FFF"} />;
 
   if (isError) {
-    content = (
-      <p className="errmsg">
-        {error?.data?.message}
-       
-      </p>
-    );
+    content = <p className="errmsg">{error?.data?.message}</p>;
   }
 
   if (isSuccess) {
-    const { ids } = notes;
-    const tableContent = ids?.length
-      ? ids.map((noteId) => {
-          return <Note key={noteId} noteId={noteId} />;
-        })
-      : null;
+    const { ids, entities } = notes;
+
+    let filterIds = [];
+    if (isManager || isAdmin) {
+      filterIds = [...ids];
+    } else {
+      filterIds = ids?.filter(
+        (noteId) => entities[noteId].username === username
+      );
+    }
+    const tableContent =
+      ids?.length &&
+      filterIds.map((noteId) => {
+        return <Note key={noteId} noteId={noteId} />;
+      });
 
     content = (
       <table className="table table--notes">

@@ -33,6 +33,7 @@ const Login = () => {
     try {
       //  we use unwrap() because we have not use RTK native error request standard like isError, ... then we used try ... catch instead
       const { accessToken } = await login({ username, password }).unwrap();
+      console.log(accessToken);
       dispatch(setCredentials({ accessToken }));
       setUsername("");
       setPassword("");
@@ -98,7 +99,7 @@ const Login = () => {
             required
           />
           <br />
-          <button className="form__submit-button">Sign In</button>
+          <button className="form__submit-button">Sign In</button> <br />
 
           <label htmlFor="persist" className="form__persist">
             <input

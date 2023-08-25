@@ -80,6 +80,8 @@ footer {
   border-top: 1px solid #f2f2f2;
   display: flex;
   min-height: 10vh;
+  gap: 0.7rem;
+
 }
 
 .home__fontazesome {
@@ -134,5 +136,8 @@ thead {
   padding: 0 2rem ;
 }
 
+.persistloginmsg {
+  text-decoration: underline;
+}
 
 

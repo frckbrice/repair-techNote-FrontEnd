@@ -10,7 +10,7 @@ const USER_REGEX = /^[A-z]{3,20}$/;
 const PWD_REGEX = /^[A-z0-9!@#%]{4,12}$/;
 
 export const EditUserForm = ({ user }) => {
-  const [updateUser, { isLoading, isSuccess, isError, error }] =
+  const [updateUser, { g, isSuccess, isError, error }] =
     useUpdateUserMutation();
 
   const [
@@ -149,7 +149,7 @@ export const EditUserForm = ({ user }) => {
           className={`form__input ${validPwdClass}`}
           value={password}
           onChange={onPasswordChange}
-        /> 
+        />
         <br />
         <label
           htmlFor="user-active"
@@ -191,7 +191,7 @@ export const EditUserForm = ({ user }) => {
 EditUserForm.prototype = {
   // id: PropTypes.string,
 };
-EditUserForm.PropTypes = {
+EditUserForm.propTypes = {
   errContent: PropTypes.bool,
   canSave: PropTypes.bool,
   options: PropTypes.array,

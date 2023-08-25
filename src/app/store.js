@@ -10,7 +10,8 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
-  devTools: true,
+  devTools: false,  //good for production mode
+  //  devTools: true, good for development mode
 });
 // helps to fetch data on each re-render
 setupListeners(store.dispatch);

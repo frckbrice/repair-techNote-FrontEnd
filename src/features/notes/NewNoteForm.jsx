@@ -2,14 +2,17 @@ import { useAddNewNoteMutation } from "./notesApiSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { selectAllUsers } from "../users/usersApiSlice";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import useAuth from "../../hooks/useAuth";
+import PropTypes from "prop-types";
 
+//eslint-disable-next-line
 const NewNoteForm = ({ users }) => {
-
+  
   const [addNewNote, { isSuccess, isError, isLoading, error }] =
     useAddNewNoteMutation();
+
+  const { username, isAdmin, isManager } = useAuth();
 
   const navigate = useNavigate();
 
@@ -21,7 +24,6 @@ const NewNoteForm = ({ users }) => {
     if (isSuccess) {
       setText("");
       setTitle("");
-      setUser("");
       navigate("/dash/notes");
     }
   }, [isSuccess, navigate]);
@@ -33,12 +35,18 @@ const NewNoteForm = ({ users }) => {
   const onSaveNoteClicked = async (e) => {
     e.preventDefault();
     await addNewNote({ user, title, text });
+    console.log({ user, title, text });
   };
 
   const canSave = [user, title, text].every(Boolean) && !isLoading;
 
-  console.log(users);
-  const options = users.map((user) => {
+  let filterUser;
+  if (isManager || isAdmin) {
+    filterUser = [...users];
+  } else {
+    filterUser = users?.filter((user) => user.username === username);
+  }
+  const options = filterUser?.map((user) => {
     return (
       <option value={user?.id} key={user?.id}>
         {user.username}
@@ -66,8 +74,9 @@ const NewNoteForm = ({ users }) => {
           </div>
         </div>
         <label className="form__label" htmlFor="user">
-          User:
-        </label><br />
+          ASSINGNED TO:
+        </label>
+        <br />
         <select
           name="user"
           id="user"
@@ -75,7 +84,7 @@ const NewNoteForm = ({ users }) => {
           value={user}
           onChange={onUserChange}
         >
-          <option value=""></option>
+         {isManager || isAdmin && <option value="">Select user</option>}
           {options}
         </select>
         <br />
@@ -112,4 +121,24 @@ const NewNoteForm = ({ users }) => {
   return content;
 };
 
-export default NewNoteForm;
+NewNoteForm.prototype = {
+  addNewNote: PropTypes.func,
+  username: PropTypes.string,
+  users: PropTypes.array,
+  isError: PropTypes.bool,
+  isSuccess: PropTypes.bool,
+  error: PropTypes.string,
+  isLoading: PropTypes.bool,
+  user: PropTypes.string,
+  title: PropTypes.string,
+  text: PropTypes.string,
+  onTextChange: PropTypes.func,
+  onTitleChange: PropTypes.func,
+  onUserChange: PropTypes.func,
+  canSave: PropTypes.bool,
+  onSaveNoteClicked: PropTypes.func,
+  options: PropTypes.array,
+};
+
+//eslint-disable-next-line
+export default React.memo(NewNoteForm);

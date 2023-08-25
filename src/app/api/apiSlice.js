@@ -3,7 +3,8 @@ import { setCredentials } from "../../features/auth/authSlice";
 
 // we process to login by setting the bearer for verifyjswt check in the backend. and also we get cookie via credential enabled
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:3500",
+  // baseUrl: "http://localhost:3500",
+  baseUrl: "https://technotes-api-onrender.com", //for deployement we switch to https:
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = getState().auth.token;
@@ -15,11 +16,11 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-// we proceed to resend a refresh after cookie expires
+//* here we proceed to resend a refresh after cookie expires
 const baseQueryWithReauth = async (args, api, extraOptions) => {
-  console.log(args); //request url, method, body
-  console.log(api); // signal, dispatch, getState()
-  console.log(extraOptions); //custom like {shout: true}
+  // console.log(args); //request url, method, body
+  // console.log(api); // signal, dispatch, getState()
+  // console.log(extraOptions); //custom like {shout: true}
 
   let result = await baseQuery(args, api, extraOptions);
 
@@ -38,7 +39,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       result = await baseQuery(args, api, extraOptions);
     } else {
       if (refreshResult?.error?.data === 403) {
-        refreshResult.error.data.message = "Your login has expired. ";
+        refreshResult.error.data.message = "Your login has expired.";
       }
       return refreshResult;
     }

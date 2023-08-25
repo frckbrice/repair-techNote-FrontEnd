@@ -18,6 +18,12 @@ import EditNote from "./features/notes/EditNote";
 import NewNote from "./features/notes/NewNote";
 import Prefetch from "./features/auth/Prefetch";
 import PersistLogin from "./features/auth/PersistLogin";
+import { ROLES } from "./config/roles";
+import RequireAuth from "./features/auth/RequireAuth";
+
+import { disableReactDevTools } from "@@fvilers/disable-react-devtools";
+
+if (process.env.NODE_ENV !== "production") disableReactDevTools();
 
 const routes = createBrowserRouter([
   {
@@ -28,6 +34,7 @@ const routes = createBrowserRouter([
     children: [
       {
         errorElement: <ErrorPage />,
+        //* public routes
         children: [
           {
             index: true,
@@ -38,51 +45,71 @@ const routes = createBrowserRouter([
             path: "/login",
             element: <Login />,
           },
-          { // this help us to remain loggin even if token expires and then require the refresh token
+          {
+            // this help us to remain loggin even if token expires and then require the refresh token
+            //* protected routes
             element: <PersistLogin />,
             children: [
-              {// prefetch just fetch data in advance
-                element: <Prefetch />,
+              {
+                element: (
+                  <RequireAuth allowedRoles={[...Object.values(ROLES)]} />
+                ),
                 children: [
                   {
-                    path: "/dash",
-                    element: <DashLayout />,
+                    // prefetch just fetch data in advance
+                    element: <Prefetch />,
                     children: [
                       {
-                        index: true,
-                        element: <Welcome />,
-                      },
-                      {
-                        path: "users",
+                        path: "/dash",
+                        element: <DashLayout />,
                         children: [
                           {
                             index: true,
-                            element: <UserList />,
+                            element: <Welcome />,
                           },
                           {
-                            path: ":id",
-                            element: <EditUser />,
+                            element: (
+                              <RequireAuth
+                                allowedRoles={[ROLES.Admin, ROLES.Manager]}
+                              />
+                            ),
+                            children: [
+                              {
+                                path: "users",
+                                children: [
+                                  {
+                                    index: true,
+                                    element: <UserList />,
+                                  },
+                                  {
+                                    path: ":id",
+                                    element: <EditUser />,
+                                  },
+                                  {
+                                    path: "new",
+                                    element: <NewUserForm />,
+                                  },
+                                ],
+                              },
+                            ],
                           },
+
                           {
-                            path: "new",
-                            element: <NewUserForm />,
-                          },
-                        ],
-                      },
-                      {
-                        path: "notes",
-                        children: [
-                          {
-                            index: true,
-                            element: <NoteList />,
-                          },
-                          {
-                            path: ":id",
-                            element: <EditNote />,
-                          },
-                          {
-                            path: "new",
-                            element: <NewNote />,
+                            path: "notes",
+                            children: [
+                              {
+                                index: true,
+                                element: <NoteList />,
+                              },
+                              {
+                                path: ":id",
+                                element: <EditNote />,
+                              },
+                              {
+                                path: "new",
+                                element: <NewNote />,
+                              },
+                            ],
                           },
                         ],
                       },

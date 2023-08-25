@@ -10,7 +10,7 @@ const Public = () => {
       </header>
       <main className="public_main">
         <p>
-          Locate in the most beatifull capital iin this earth, Avom &quote;s
+          Locate in the most beatifull capital in this earth,<br /> Avom &quote;s
           Repairs provides a trained staff ready to meet your tech repair needs.
         </p>
         <address className="public_addr">
@@ -18,7 +18,7 @@ const Public = () => {
           <br />
             1147 avenue des banques 
           <br />
-          <a href="tel:+237674852304">(+237)674852304</a>
+          <a href="tel:+237674852304">(+237) 674852304</a>
         </address>
         <br />
         <p>Owner:Avom Brice</p>
